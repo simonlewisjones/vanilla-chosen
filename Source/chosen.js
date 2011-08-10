@@ -1,9 +1,21 @@
 /*
 ---
 name: Chosen
+
 description: Creates a Picker, which can be used for anything
-authors: Patrick Filler, Jules Janssen, Jonnathan Soares
-requires: [Core/*, More/Locale]
+
+authors:
+ - Patrick Filler
+ - Jules Janssen
+ - Jonnathan Soares
+
+requires:
+ - Core/*
+ - More/Element.Measure
+ - More/Locale
+
+license: MIT-style license
+
 provides: Chosen
 ...
 */
@@ -43,7 +55,9 @@ var Chosen = new Class({
 
 		if (!this.form_field.id) this.form_field.id = String.uniqueID();
 		this.container_id = this.form_field.id.replace(/(:|\.)/g, '_') + "_chzn";
-		this.f_width = this.form_field.getCoordinates().width;
+		this.f_width = this.form_field.measure(function() {
+			return this.getSize().x;
+		});
 
 		this.default_text = this.form_field.get('data-placeholder') ? this.form_field.get('data-placeholder') : Locale.get('Chosen.placeholder', this.form_field.multiple);
 
