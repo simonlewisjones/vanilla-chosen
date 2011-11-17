@@ -40,13 +40,24 @@ var Chosen = new Class({
 
 	initialize: function(elmn){
 
-		this.click_test_action = this.test_active_click.bind(this);
 		this.form_field = elmn;
 		this.is_multiple = this.form_field.multiple;
 		this.is_rtl = this.form_field.hasClass("chzn-rtl");
+		this.pre_bind();
 		this.set_up_html();
 		this.register_observers();
+	},
 
+	pre_bind: function(){
+		// Prebind common methods
+		['test_active_click','container_click','mouse_enter',
+		'mouse_leave','search_results_click','search_results_mouseover',
+		'search_results_mouseout','input_blur','keyup_checker',
+		'keydown_checker','choices_click','input_focus',
+		'activate_field','results_update_field']
+			.each(function(method){
+				this[method] = this[method].bind(this);
+			},this);
 	},
 
 	set_up_html: function(){
@@ -113,39 +124,67 @@ var Chosen = new Class({
 	},
 
 	register_observers: function(){
-
 		this.container.addEvents({
-			click: this.container_click.bind(this),
-			mouseenter: this.mouse_enter.bind(this),
-			mouseleave: this.mouse_leave.bind(this)
+			click: this.container_click,
+			mouseenter: this.mouse_enter,
+			mouseleave: this.mouse_leave
 		});
 
 		this.search_results.addEvents({
-			click: this.search_results_click.bind(this),
-			mouseover: this.search_results_mouseover.bind(this),
-			mouseout: this.search_results_mouseout.bind(this)
+			click: this.search_results_click,
+			mouseover: this.search_results_mouseover,
+			mouseout: this.search_results_mouseout
 		});
 
-		this.form_field.addEvent("liszt:updated", this.results_update_field.bind(this));
+		this.form_field.addEvent("liszt:updated", this.results_update_field);
 
 		this.search_field.addEvents({
-			blur: this.input_blur.bind(this),
-			keyup: this.keyup_checker.bind(this),
-			keydown: this.keydown_checker.bind(this)
+			blur: this.input_blur,
+			keyup: this.keyup_checker,
+			keydown: this.keydown_checker
 		});
 
 		if (this.is_multiple){
 
-			this.search_choices.addEvent("click", this.choices_click.bind(this));
+			this.search_choices.addEvent("click", this.choices_click);
 
-			this.search_field.addEvent("focus", this.input_focus.bind(this));
+			this.search_field.addEvent("focus", this.input_focus);
 
 		} else {
 
-			this.selected_item.addEvent("focus", this.activate_field.bind(this));
+			this.selected_item.addEvent("focus", this.activate_field);
 
 		}
+	},
 
+	unregister_observers: function(){
+		this.container.removeEvents({
+			click: this.container_click,
+			mouseenter: this.mouse_enter,
+			mouseleave: this.mouse_leave
+		});
+
+		this.search_results.removeEvents({
+			click: this.search_results_click,
+			mouseover: this.search_results_mouseover,
+			mouseout: this.search_results_mouseout
+		});
+
+		this.form_field.removeEvent("liszt:updated", this.results_update_field);
+
+		this.search_field.removeEvents({
+			blur: this.input_blur,
+			keyup: this.keyup_checker,
+			keydown: this.keydown_checker
+		});
+
+		if (this.is_multiple){
+			this.search_choices.removeEvent("click", this.choices_click);
+			this.search_field.removeEvent("focus", this.input_focus);
+		} else {
+			this.selected_item.removeEvent("focus", this.activate_field);
+		}
+		document.removeEvent('click', this.test_active_click);
 	},
 
 	container_click: function(evt){
@@ -164,7 +203,7 @@ var Chosen = new Class({
 
 				}
 
-				document.addEvent('click', this.click_test_action);
+				document.addEvent('click', this.test_active_click);
 				this.results_show();
 
 			}else if (!this.is_multiple && evt && (evt.target === this.selected_item || evt.target.getParents('a.chzn-single').length)){
@@ -194,7 +233,7 @@ var Chosen = new Class({
 
 	input_focus: function(evt){
 		if (!this.active_field){
-			setTimeout(this.container_click.bind(this), 50);
+			setTimeout(this.container_click, 50);
 		}
 	},
 
@@ -212,7 +251,7 @@ var Chosen = new Class({
 	},
 
 	close_field: function(){
-		document.removeEvent('click', this.click_test_action);
+		document.removeEvent('click', this.test_active_click);
 
 		if (!this.is_multiple){
 			this.selected_item.set('tabindex', this.search_field.get('tabindex'));
