@@ -924,7 +924,7 @@ var SelectParser = new Class({
 
 	add_node: function(child){
 
-		if (child.nodeName === "OPTGROUP"){
+		if (child.nodeName.toUpperCase() === "OPTGROUP"){
 			this.add_group(child);
 		} else {
 			this.add_option(child);
@@ -949,7 +949,7 @@ var SelectParser = new Class({
 
 	add_option: function(option, group_position, group_disabled){
 
-		if (option.nodeName === "OPTION") {
+		if (option.nodeName.toUpperCase() === "OPTION") {
 
 			if (option.text !== ""){
 				if (group_position != null) {
