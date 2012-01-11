@@ -1,16 +1,59 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<style>
+		/* RESET */
+		html, body, div, span, h1, h2, h3, h4, h5, h6, p, blockquote, a,
+		font, img, dl, dt, dd, ol, ul, li, legend, table, tbody, tr, th, td
+		{margin:0px;padding:0px;border:0;outline:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;list-style:none;}
+		a img {border: none;}
+		ol li {list-style: decimal outside;}
+		fieldset {border:0;padding:0;}
 
-	<title>Chosen Demo</title>
-	<link rel="stylesheet" href="style.css" />
+		body { font-family: sans-serif; font-size: 1em; }
+
+		div#container { width: 780px; margin: 0 auto; padding: 1em 0;  }
+		p { margin: 1em 0; max-width: 700px; }
+		h1 + p { margin-top: 0; }
+
+		h1, h2 { font-family: Georgia, Times, serif; }
+		h1 { font-size: 2em; margin-bottom: .75em; }
+		h2 { font-size: 1.5em; margin: 2.5em 0 .5em; border-bottom: 1px solid #999; padding-bottom: 5px; }
+		h3 { font-weight: bold; }
+
+		ul li { list-style: disc; margin-left: 1em; }
+		ol li { margin-left: 1.25em; }
+
+		div.side-by-side { width: 100%; margin-bottom: 1em; }
+		div.side-by-side > div { float: left; width: 50%; }
+		div.side-by-side > div > em { margin-bottom: 10px; display: block; }
+
+		a { color: orange; text-decoration: underline; }
+
+		.faqs em { display: block; }
+
+		.clearfix:after {
+			content: "\0020";
+			display: block;
+			height: 0;
+			clear: both;
+			overflow: hidden;
+			visibility: hidden;
+		}
+
+		footer {
+			margin-top: 2em;
+			border-top: 1px solid #666;
+			padding-top: 5px;
+		}
+	</style>
 	<link rel="stylesheet" href="../Source/chosen.css" />
 </head>
 <body>
+	<form>
 	<div id="container">
 		<h1>Chosen</h1>
-		<p>Chosen is a JavaScript plug-in for Prototype, jQuery &amp; Mootools that makes long, unwieldy select boxes much more user-friendly. For more information (including usage, explanation and faqs), check out the <a href="http://harvesthq.github.com/chosen/">online documentation</a>.</p>
+		<p>Chosen is a JavaScript plugin for Prototype, jQuery &amp; Mootools that makes long, unwieldy select boxes much more user-friendly.</p>
 
 		<h2>Standard Select</h2>
 		<div class="side-by-side clearfix">
@@ -162,6 +205,7 @@
 					<option value="Moldova, Republic of">Moldova, Republic of</option>
 					<option value="Monaco">Monaco</option>
 					<option value="Mongolia">Mongolia</option>
+					<option value="Montenegro">Montenegro</option>
 					<option value="Montserrat">Montserrat</option>
 					<option value="Morocco">Morocco</option>
 					<option value="Mozambique">Mozambique</option>
@@ -208,7 +252,7 @@
 					<option value="Sao Tome and Principe">Sao Tome and Principe</option>
 					<option value="Saudi Arabia">Saudi Arabia</option>
 					<option value="Senegal">Senegal</option>
-					<option value="Serbia and Montenegro">Serbia and Montenegro</option>
+					<option value="Serbia">Serbia</option>
 					<option value="Seychelles">Seychelles</option>
 					<option value="Sierra Leone">Sierra Leone</option>
 					<option value="Singapore">Singapore</option>
@@ -264,7 +308,7 @@
 			</div>
 			<div>
 				<em>Into This</em>
-				<select data-placeholder="Choose a Country..." class="chzn-select" style="width:350px;" tabindex="2" id="single_example">
+				<select data-placeholder="Choose a Country..." class="chzn-select" style="width:350px;" tabindex="2">
 					<option value=""></option>
 					<option value="United States">United States</option>
 					<option value="United Kingdom">United Kingdom</option>
@@ -410,6 +454,7 @@
 					<option value="Moldova, Republic of">Moldova, Republic of</option>
 					<option value="Monaco">Monaco</option>
 					<option value="Mongolia">Mongolia</option>
+					<option value="Montenegro">Montenegro</option>
 					<option value="Montserrat">Montserrat</option>
 					<option value="Morocco">Morocco</option>
 					<option value="Mozambique">Mozambique</option>
@@ -456,7 +501,7 @@
 					<option value="Sao Tome and Principe">Sao Tome and Principe</option>
 					<option value="Saudi Arabia">Saudi Arabia</option>
 					<option value="Senegal">Senegal</option>
-					<option value="Serbia and Montenegro">Serbia and Montenegro</option>
+					<option value="Serbia">Serbia</option>
 					<option value="Seychelles">Seychelles</option>
 					<option value="Sierra Leone">Sierra Leone</option>
 					<option value="Singapore">Singapore</option>
@@ -718,6 +763,7 @@
 					<option value="Somalia">Somalia</option>
 					<option value="South Africa">South Africa</option>
 					<option value="South Georgia and The South Sandwich Islands">South Georgia and The South Sandwich Islands</option>
+					<option value="South Sudan">South Sudan</option>
 					<option value="Spain">Spain</option>
 					<option value="Sri Lanka">Sri Lanka</option>
 					<option value="Sudan">Sudan</option>
@@ -763,7 +809,7 @@
 			</div>
 			<div>
 				<em>Into This</em>
-				<select data-placeholder="Choose a Country..." class="chzn-select" multiple style="width:350px;" tabindex="4" id="multi_example">
+				<select data-placeholder="Choose a Country..." class="chzn-select" multiple style="width:350px;" tabindex="4">
 					<option value=""></option>
 					<option value="United States">United States</option>
 					<option value="United Kingdom">United Kingdom</option>
@@ -966,6 +1012,7 @@
 					<option value="Somalia">Somalia</option>
 					<option value="South Africa">South Africa</option>
 					<option value="South Georgia and The South Sandwich Islands">South Georgia and The South Sandwich Islands</option>
+					<option value="South Sudan">South Sudan</option>
 					<option value="Spain">Spain</option>
 					<option value="Sri Lanka">Sri Lanka</option>
 					<option value="Sudan">Sudan</option>
@@ -1015,9 +1062,9 @@
 		<div class="side-by-side clearfix">
 			<div>
 				<em>Single Select with Groups</em>
-				<select id="nfl_team_single" data-placeholder="Your Favorite Football Team" style="width:350px;" class="chzn-select" tabindex="5">
+				<select data-placeholder="Your Favorite Football Team" style="width:350px;" class="chzn-select" tabindex="5">
 					<option value=""></option>
-					<optgroup label="NFC East">
+					<optgroup label="NFC EAST">
 						<option>Dallas Cowboys</option>
 						<option>New York Giants</option>
 						<option>Philadelphia Eagles</option>
@@ -1069,9 +1116,9 @@
 			</div>
 			<div>
 				<em>Multiple Select with Groups</em>
-				<select id="nfl_team_multi" data-placeholder="Your Favorite Football Team" style="width:350px;" class="chzn-select" multiple tabindex="6">
+				<select data-placeholder="Your Favorite Football Team" style="width:350px;" class="chzn-select" multiple tabindex="6">
 					<option value=""></option>
-					<optgroup label="NFC East">
+					<optgroup label="NFC EAST">
 						<option>Dallas Cowboys</option>
 						<option>New York Giants</option>
 						<option>Philadelphia Eagles</option>
@@ -1123,12 +1170,12 @@
 			</div>
 		</div>
 
-	<h2>Selected and Disabled Support</h2>
+		<h2>Selected and Disabled Support</h2>
 		<div class="side-by-side clearfix">
 			<p>Chosen automatically highlights selected options and removes disabled options.</p>
 			<div>
 				<em>Single Select</em>
-				<select id="bears_single" data-placeholder="Your Favorite Type of Bear" style="width:350px;" class="chzn-select" tabindex="7">
+				<select data-placeholder="Your Favorite Type of Bear" style="width:350px;" class="chzn-select" tabindex="7">
 					<option value=""></option>
 					<option>American Black Bear</option>
 					<option>Asiatic Black Bear</option>
@@ -1141,8 +1188,8 @@
 				</select>
 			</div>
 			<div>
-				<em>Multiple Select with Groups</em>
-				<select id="bears_multiple" data-placeholder="Your Favorite Types of Bear" style="width:350px;" multiple class="chzn-select" tabindex="8">
+				<em>Multiple Select</em>
+				<select data-placeholder="Your Favorite Types of Bear" style="width:350px;" multiple class="chzn-select" id="test_me" name="test_me_form" tabindex="8">
 					<option value=""></option>
 					<option>American Black Bear</option>
 					<option>Asiatic Black Bear</option>
@@ -1156,11 +1203,22 @@
 			</div>
 		</div>
 
-		<h2>Default Text Support</h2>
+		<h2>Allow Deselect on Single Selects</h2>
 		<div class="side-by-side clearfix">
-			<p>Chosen automatically sets the default field text ("Choose a country...") by reading the select element's data-placeholder value. If no data-placeholder value is present, it will default to "Select Some Option" or "Select Some Options" depending on whether the select is single or multiple. You can change these elements in the plug-in js file as you see fit.</p>
-			<code>&lt;select <strong>data-placeholder="Choose a country..."</strong> style="width:350px;" multiple class="chzn-select"&gt;</code>
-			<p><strong>Note:</strong> on single selects, the first element is assumed to be selected by the browser. To take advantage of the default text support, you will need to include a blank option as the first element of your select list.</p>
+			<p>When a single select box isn't a required field, you can set <code>allow_single_deselect: true</code> and Chosen will add a UI element for option deselection. This will only work if the first option has blank text.</p>
+			<div class="side-by-side clearfix">
+				<select data-placeholder="Your Favorite Type of Bear" style="width:350px;" class="chzn-select-deselect" tabindex="7">
+					<option value=""></option>
+					<option>American Black Bear</option>
+					<option>Asiatic Black Bear</option>
+					<option>Brown Bear</option>
+					<option>Giant Panda</option>
+					<option selected>Sloth Bear</option>
+					<option>Sun Bear</option>
+					<option>Polar Bear</option>
+					<option>Spectacled Bear</option>
+				</select>
+			</div>
 		</div>
 
 		<h2>Right to Left Support</h2>
@@ -1217,15 +1275,17 @@
 		<h2>Setup (for MooTools)</h2>
 		<p>Using Chosen is easy as can be.</p>
 		<ol>
-			<li>Download the plug-in and copy the chosen files to your app.</li>
-			<li>Activate the plugin on the select boxes of your choice:<br /> Single Select: <code>new Chosen($('chzn-select-id'));</code><br /> Shortcut for multiple selects at once: <code>$$(".chzn-select").chosen();</code></li>
+			<li>Download the plugin and copy the chosen files to your app.</li>
+			<li>Activate the plugin on the select boxes of your choice: <code>$(".chzn-select").chosen()</code></li>
 			<li><a href="http://youtu.be/pS-RsIzb78U?t=57s">Disco</a>.</li>
 		</ol>
 
 	</div>
+	
 	<script src="http://ajax.googleapis.com/ajax/libs/mootools/1.3/mootools-yui-compressed.js"></script>
-	<script src="mootools-more-1.3.2.1.js"></script>
+	<script src="mootools-more-1.4.0.1.js"></script>
 	<script src="../Source/chosen.js"></script>
 	<script src="../Source/Locale.en-US.Chosen.js"></script>
-	<script> $$(".chzn-select").chosen(); </script>
+	<script> $$(".chzn-select").chosen(); $$(".chzn-select-deselect").chosen({allow_single_deselect:true}); </script>
+	</form>
 </body>

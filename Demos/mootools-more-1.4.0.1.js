@@ -1,3 +1,6 @@
+// MooTools: the javascript framework.
+// Load this file's selection again by visiting: http://mootools.net/more/98fc877e84c1594d47fd0ae27648bc30 
+// Or build this file again with packager using: packager build More/Class.Binds More/Element.Measure More/Locale
 /*
 ---
 
@@ -28,8 +31,47 @@ provides: [MooTools.More]
 */
 
 MooTools.More = {
-	'version': '1.3.2.1',
-	'build': 'e586bcd2496e9b22acfde32e12f84d49ce09e59d'
+	'version': '1.4.0.1',
+	'build': 'a4244edf2aa97ac8a196fc96082dd35af1abab87'
+};
+
+
+/*
+---
+
+script: Class.Binds.js
+
+name: Class.Binds
+
+description: Automagically binds specified methods in a class to the instance of the class.
+
+license: MIT-style license
+
+authors:
+  - Aaron Newton
+
+requires:
+  - Core/Class
+  - /MooTools.More
+
+provides: [Class.Binds]
+
+...
+*/
+
+Class.Mutators.Binds = function(binds){
+	if (!this.prototype.initialize) this.implement('initialize', function(){});
+	return Array.from(binds).concat(this.prototype.Binds || []);
+};
+
+Class.Mutators.initialize = function(initialize){
+	return function(){
+		Array.from(this.Binds).each(function(name){
+			var original = this[name];
+			if (original) this[name] = original.bind(this);
+		}, this);
+		return initialize.apply(this, arguments);
+	};
 };
 
 
@@ -436,3 +478,4 @@ Locale.Set = new Class({
 
 
 })();
+
