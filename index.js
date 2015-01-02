@@ -28,7 +28,15 @@
 
 		this.items = this.getItems(this.$element);
 
+		this.htmlComponents = [];
+
+		this.resultsElements = [];
+
+		this.$selectedResult = null;
+
 		this.buildHtml(this.items, this.$element, this.options);
+
+		this.registerEvents();
 	};
 
 	// #region properties
@@ -40,10 +48,6 @@
 	// #endregion properties
 
 	// #region initialization
-
-	Chosen.prototype.getItems = function ($select) {
-		return [];
-	};
 
 	Chosen.prototype.buildHtml = function (items, $element, options) {
 
@@ -63,6 +67,10 @@
 				: this.buildSingleDropdownMask(options),
 			$dropdown = this.buildDropdown(options, items);
 
+		this.$dropdownContainer = $dropdownContainer;
+		this.$dropdownMask = $dropdownMask;
+		this.$dropdown = $dropdown;
+
 		$dropdownContainer.appendChild($dropdownMask);
 		$dropdownContainer.appendChild($dropdown);
 
@@ -78,8 +86,9 @@
 		$chosenContainer.classList.add('chosen-container');
 		$chosenContainer.classList.add('chosen-container-single');
 
-		$chosenContainer.style.height = options.height;
 		$chosenContainer.style.width = options.width;
+
+		this.htmlComponents.push($chosenContainer);
 
 		return $chosenContainer;
 	};
@@ -97,6 +106,13 @@
 		$caretContainer.appendChild($caret);
 		$dropdownMaskContainer.appendChild($selectedValueContainer);
 		$dropdownMaskContainer.appendChild($caretContainer);
+
+		this.htmlComponents.push($dropdownMaskContainer);
+		this.htmlComponents.push($selectedValueContainer);
+		this.htmlComponents.push($caretContainer);
+		this.htmlComponents.push($caret);
+
+		this.$selectedValueContainer = $selectedValueContainer;
 
 		return $dropdownMaskContainer;
 	};
@@ -130,8 +146,11 @@
 		$dropdownContainer.appendChild($searchInputContainer);
 		$dropdownContainer.appendChild($resultsContainer);
 
-		$dropdownContainer.style.height = options.height;
-		$dropdownContainer.style.width = options.width;
+		this.htmlComponents.push($dropdownContainer);
+		this.htmlComponents.push($searchInputContainer);
+		this.htmlComponents.push($searchInput);
+		this.htmlComponents.push($resultsContainer);
+		this.htmlComponents.push($results);
 
 		return $dropdownContainer;
 	};
@@ -141,6 +160,9 @@
 		if (!items) {
 			return [];
 		}
+
+		var htmlComponents = this.htmlComponents,
+			resultsElements = this.resultsElements;
 
 		return items.map(function (item, index) {
 
@@ -152,11 +174,150 @@
 
 			$result.innerText = item.text;
 
+			htmlComponents.push($result);
+
+			resultsElements.push($result);
+
 			return $result;
 		});
 	};
 
+	Chosen.prototype.registerEvents = function () {
+
+		// document.addEventListener('click', this.evOnOuterClick.bind(this));
+
+		this.$dropdownMask.addEventListener('click', this.evOnContainerClick.bind(this));
+		this.$dropdownMask.addEventListener('focus', this.evOnContainerFocus.bind(this));
+
+		for (var i = 0; i < this.resultsElements.length; i++) {
+			this.resultsElements[i].addEventListener('click', this.evResultClick.bind(this));
+		}
+	};
+
 	// #endregion initialization
+
+	// #region event handlers
+
+	Chosen.prototype.evOnContainerFocus = function (e) {
+
+		this.focused = true;
+
+		this.$dropdownContainer.classList.add('chosen-container-active');
+
+		this.$dropdown.focus();
+	};
+
+	Chosen.prototype.evOnOuterClick = function (e) {
+
+		if (this.isChosenComponent(e.currentTarget)) {
+
+			this.evOnContainerClick(e);
+
+			return;
+		}
+
+		this.focused = false;
+
+		this.closeDropdown();
+
+		this.$dropdownContainer.classList.remove('chosen-container-active');	
+	};
+
+	Chosen.prototype.evOnContainerClick = function (e) {
+
+		e.preventDefault();
+
+		this.opened = !this.opened;
+
+		if (this.opened) {
+			this.openDropdown();
+		} else {
+			this.closeDropdown();
+		}
+	};
+
+	Chosen.prototype.evResultClick = function (e) {
+
+		e.preventDefault();
+
+		this.$selectedResult = e.currentTarget;
+
+		var selectedItem = this.getItemByResultIndex(this.$selectedResult.getAttribute('data-option-array-index')),
+			selectedValue = selectedItem.value;
+
+		this.setSelectedValue(selectedValue);
+	};
+
+	// #endregion event handlers
+
+	// #region internal methods
+
+	Chosen.prototype.openDropdown = function () {
+
+		this.opened = true;
+
+		this.$dropdownContainer.classList.add('chosen-with-drop');
+	};
+
+	Chosen.prototype.closeDropdown = function () {
+
+		this.opened = false;
+
+		this.$dropdownContainer.classList.remove('chosen-with-drop');
+	};
+
+	Chosen.prototype.isChosenComponent = function ($element) {
+
+		return this.htmlComponents.indexOf($element) !== -1;
+	};
+
+	Chosen.prototype.getItems = function ($select) {
+		
+		var $options = $select.querySelectorAll('option'),
+			items = [];
+
+		for (var i = 0; i < $options.length; i++) {
+
+			items.push({
+				value: $options[i].getAttribute('value'),
+				text: $options[i].innerText
+			});
+		}
+
+		return items;
+	};
+
+	Chosen.prototype.getItemByResultIndex = function (index) {
+
+		if (typeof index !== 'number') {
+			index = parseInt(index);
+		}
+
+		index = index - 1;
+
+		return this.items[index];
+	};
+
+	Chosen.prototype.getItemByValue = function (value) {
+
+		var matches = this.items.filter(function (item) {
+			return item.value === value;
+		});
+
+		return matches[0];
+	};
+
+	Chosen.prototype.setSelectedValue = function (value) {
+
+		this.selectedValue = value;
+
+		var selectedItem = this.getItemByValue(value),
+			selectedItemText = selectedItem.text || '';
+
+		this.$selectedValueContainer.innerText = selectedItemText;
+	};
+
+	// #endregion
 
 	if (typeof module !== 'undefined' && module !== null) {
 		module.exports = Chosen;
