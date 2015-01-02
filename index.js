@@ -98,9 +98,6 @@
 		$dropdownMaskContainer.appendChild($selectedValueContainer);
 		$dropdownMaskContainer.appendChild($caretContainer);
 
-		$dropdownMaskContainer.style.height = options.height;
-		$dropdownMaskContainer.style.width = options.width;
-
 		return $dropdownMaskContainer;
 	};
 
