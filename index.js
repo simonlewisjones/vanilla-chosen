@@ -323,8 +323,6 @@
 		this.query = query;
 
 		this.performQuery(this.query);
-
-		console.log(query);
 	};
 
 	Chosen.prototype.evSearchContainerClick = function (e) {
