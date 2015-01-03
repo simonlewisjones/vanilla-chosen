@@ -41,6 +41,12 @@
 		this.buildHtml(this.items, this.$element, this.options);
 
 		this.registerEvents();
+
+		if (this.$element.value) {
+			this.setSelectedValue(this.$element.value);
+		} else {
+			this.setSelectedValue(null);
+		}
 	};
 
 	// #region properties
