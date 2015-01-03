@@ -155,6 +155,7 @@
 		this.htmlComponents.push($results);
 
 		this.$resultsContainer = $resultsContainer;
+		this.$searchInputContainer = $searchInputContainer;
 		this.$searchInput = $searchInput;
 
 		return $dropdownContainer;
@@ -162,8 +163,29 @@
 
 	Chosen.prototype.buildResults = function (items) {
 
-		if (!items) {
-			return [];
+		if (!items || items.length === 0) {
+
+			var $noResults = document.createElement('li');
+
+			$noResults.classList.add('chosen-result');
+			$noResults.classList.add('no-results');
+
+			if (this.query) {
+
+				var $queryElement = document.createElement('span');
+
+				$queryElement.innerText = this.query;
+
+				$noResults.innerText = this.options.noResultsText || 'No results match ';
+
+				$noResults.appendChild($queryElement);
+
+			} else {
+
+				$noResults.innerText = this.options.emptyListText || 'No items in list';
+			}
+
+			return [$noResults];
 		}
 
 		var htmlComponents = this.htmlComponents,
@@ -196,17 +218,9 @@
 		this.$dropdownMask.addEventListener('click', this.evOnContainerClick.bind(this));
 		this.$dropdownMask.addEventListener('focus', this.evOnContainerFocus.bind(this));
 
-		// this.$resultsContainer.addEventListener('click', this.evResultClick.bind(this));
-		// this.$resultsContainer.addEventListener('mouseenter', this.evResultMouseEnter.bind(this));
-		// this.$resultsContainer.addEventListener('mouseleave', this.evResultMouseLeave.bind(this));
+		this.registerSearchEvents();
 
 		this.registerResultsEvents(this.resultsElements);
-
-		// for (var i = 0; i < this.resultsElements.length; i++) {
-		// 	this.resultsElements[i].addEventListener('click', this.evResultClick.bind(this));
-		// 	this.resultsElements[i].addEventListener('mouseenter', this.evResultMouseEnter.bind(this));
-		// 	this.resultsElements[i].addEventListener('mouseleave', this.evResultMouseLeave.bind(this));
-		// }
 	};
 
 	Chosen.prototype.registerResultsEvents = function (resultsElements) {
@@ -216,6 +230,13 @@
 			resultsElements[i].addEventListener('mouseenter', this.evResultMouseEnter.bind(this));
 			resultsElements[i].addEventListener('mouseleave', this.evResultMouseLeave.bind(this));
 		}
+	};
+
+	Chosen.prototype.registerSearchEvents = function () {
+
+		this.$searchInputContainer.addEventListener('click', this.evSearchContainerClick.bind(this));
+
+		this.$searchInput.addEventListener('keyup', this.evSearchKeyUp.bind(this));
 	};
 
 	// #endregion initialization
@@ -239,7 +260,7 @@
 
 		this.closeDropdown();
 
-		this.$dropdownContainer.classList.remove('chosen-container-active');	
+		this.$dropdownContainer.classList.remove('chosen-container-active');
 	};
 
 	Chosen.prototype.evOnContainerClick = function (e) {
@@ -249,13 +270,7 @@
 
 		this.opened = !this.opened;
 
-		this.currentItems = this.queryItems(this.query, this.selectedValue);
-
-		this.resultsElements = this.buildResults(this.currentItems);
-
-		this.appendResults(this.resultsElements, this.$resultsContainer);
-
-		this.registerResultsEvents(this.resultsElements);
+		this.performQuery(this.query);
 
 		if (this.opened) {
 			this.openDropdown();
@@ -296,6 +311,22 @@
 		$target.classList.remove('highlighted');
 	};
 
+	Chosen.prototype.evSearchKeyUp = function (e) {
+
+		var query = e.target.value;
+
+		this.query = query;
+
+		this.performQuery(this.query);
+
+		console.log(query);
+	};
+
+	Chosen.prototype.evSearchContainerClick = function (e) {
+
+		e.stopPropagation();
+	};
+
 	// #endregion event handlers
 
 	// #region internal methods
@@ -312,6 +343,8 @@
 		this.opened = false;
 
 		this.$dropdownContainer.classList.remove('chosen-with-drop');
+
+		this.resetDropdownResults();
 	};
 
 	Chosen.prototype.isChosenComponent = function ($element) {
@@ -321,8 +354,17 @@
 
 	Chosen.prototype.getItems = function ($select) {
 		
-		var $options = $select.querySelectorAll('option'),
+		var $options = $select.querySelectorAll('option[value]:not([value=""])'),
 			items = [];
+
+		var $emptyOption = $select.querySelector('option:not([value])') || $select.querySelector('option[value=""]');
+
+		if ($emptyOption) {
+			items.push({
+				value: null,
+				text: $emptyOption.innerText
+			});
+		}
 
 		for (var i = 0; i < $options.length; i++) {
 
@@ -380,7 +422,15 @@
 
 	Chosen.prototype.queryItems = function (query, selectedValue) {
 
-		var queryResults = this.currentItems.slice();
+		var queryResults;
+
+		if (!query) {
+			queryResults = this.items.slice();
+		} else {
+			queryResults = this.items.filter(function (item) {
+				return item.text && item.text.toUpperCase().indexOf(query.toUpperCase()) !== -1;
+			});
+		}
 
 		if (selectedValue) {
 
@@ -396,8 +446,29 @@
 		return queryResults;
 	};
 
+	Chosen.prototype.performQuery = function (query) {
+
+		this.currentItems = this.queryItems(this.query, this.selectedValue);
+
+		this.resultsElements = this.buildResults(this.currentItems);
+
+		this.appendResults(this.resultsElements, this.$resultsContainer);
+
+		this.registerResultsEvents(this.resultsElements);
+	};
+
+	Chosen.prototype.resetDropdownResults = function () {
+
+		this.query = '';
+
+		this.$searchInput.value = '';
+
+		this.performQuery('');
+	};
+
 	// #endregion
 
+	// export the constructor, if module object is present
 	if (typeof module !== 'undefined' && module !== null) {
 		module.exports = Chosen;
 	} else {
