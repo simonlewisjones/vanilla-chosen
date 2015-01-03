@@ -405,6 +405,15 @@
 			selectedItemText = selectedItem.text || '';
 
 		this.$selectedValueContainer.innerText = selectedItemText;
+
+		this.$element.value = value;
+
+		return this.selectedValue;
+	};
+
+	Chosen.prototype.getSelectedValue = function () {
+
+		return this.selectedValue;
 	};
 
 	Chosen.prototype.appendResults = function ($results, $resultsContainer) {
