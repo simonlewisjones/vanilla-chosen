@@ -289,8 +289,7 @@
 
 		this.$selectedResult = e.target;
 
-		var selectedItem = this.getItemByResultIndex(this.$selectedResult.getAttribute('data-option-array-index')),
-			selectedValue = selectedItem.value;
+		var selectedValue = this.$selectedResult.getAttribute('data-option-value');
 
 		this.$selectedResult.classList.add('result-selected');
 
@@ -389,6 +388,8 @@
 	};
 
 	Chosen.prototype.getItemByValue = function (value) {
+
+		value = value || null;
 
 		var matches = this.items.filter(function (item) {
 			return item.value === value;
