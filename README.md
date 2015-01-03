@@ -2,10 +2,7 @@
 
 Chosen is a library for making long, unwieldy select boxes more user friendly.
 
-- MooTools support: 1.3+
-
-For documentation, usage, and examples, see:  
-http://julesjanssen.github.com/chosen
+This fork is framework-independent :D
 
 ### Chosen Credits
 
