@@ -28,9 +28,13 @@
 
 		this.items = this.getItems(this.$element);
 
+		this.currentItems = this.items.slice();
+
 		this.htmlComponents = [];
 
 		this.resultsElements = [];
+
+		this.query = '';
 
 		this.$selectedResult = null;
 
@@ -137,9 +141,7 @@
 		$searchInput.setAttribute('autocomplete', 'off');
 		$searchInput.setAttribute('tabindex', '2');
 
-		for (var i = 0; i < $results.length; i++) {
-			$resultsContainer.appendChild($results[i]);
-		}
+		this.appendResults($results, $resultsContainer);
 
 		$searchInputContainer.appendChild($searchInput);
 
@@ -151,6 +153,9 @@
 		this.htmlComponents.push($searchInput);
 		this.htmlComponents.push($resultsContainer);
 		this.htmlComponents.push($results);
+
+		this.$resultsContainer = $resultsContainer;
+		this.$searchInput = $searchInput;
 
 		return $dropdownContainer;
 	};
@@ -168,13 +173,15 @@
 
 			var $result = document.createElement('li');
 
-			$result.classList.add(item.disabled ? 'inactive-result' : 'active-result');
+			$result.classList.add('chosen-result');
+			$result.classList.add(item.disabled
+				? 'inactive-result'
+				: 'active-result');
+
 			$result.setAttribute('data-option-array-index', index + 1);
 			$result.setAttribute('data-option-value', item.value || '');
 
 			$result.innerText = item.text;
-
-			htmlComponents.push($result);
 
 			resultsElements.push($result);
 
@@ -184,13 +191,30 @@
 
 	Chosen.prototype.registerEvents = function () {
 
-		// document.addEventListener('click', this.evOnOuterClick.bind(this));
+		document.addEventListener('click', this.evOnOuterClick.bind(this));
 
 		this.$dropdownMask.addEventListener('click', this.evOnContainerClick.bind(this));
 		this.$dropdownMask.addEventListener('focus', this.evOnContainerFocus.bind(this));
 
-		for (var i = 0; i < this.resultsElements.length; i++) {
-			this.resultsElements[i].addEventListener('click', this.evResultClick.bind(this));
+		// this.$resultsContainer.addEventListener('click', this.evResultClick.bind(this));
+		// this.$resultsContainer.addEventListener('mouseenter', this.evResultMouseEnter.bind(this));
+		// this.$resultsContainer.addEventListener('mouseleave', this.evResultMouseLeave.bind(this));
+
+		this.registerResultsEvents(this.resultsElements);
+
+		// for (var i = 0; i < this.resultsElements.length; i++) {
+		// 	this.resultsElements[i].addEventListener('click', this.evResultClick.bind(this));
+		// 	this.resultsElements[i].addEventListener('mouseenter', this.evResultMouseEnter.bind(this));
+		// 	this.resultsElements[i].addEventListener('mouseleave', this.evResultMouseLeave.bind(this));
+		// }
+	};
+
+	Chosen.prototype.registerResultsEvents = function (resultsElements) {
+
+		for (var i = 0; i < resultsElements.length; i++) {
+			resultsElements[i].addEventListener('click', this.evResultClick.bind(this));
+			resultsElements[i].addEventListener('mouseenter', this.evResultMouseEnter.bind(this));
+			resultsElements[i].addEventListener('mouseleave', this.evResultMouseLeave.bind(this));
 		}
 	};
 
@@ -200,6 +224,8 @@
 
 	Chosen.prototype.evOnContainerFocus = function (e) {
 
+		e.stopPropagation();
+
 		this.focused = true;
 
 		this.$dropdownContainer.classList.add('chosen-container-active');
@@ -208,13 +234,6 @@
 	};
 
 	Chosen.prototype.evOnOuterClick = function (e) {
-
-		if (this.isChosenComponent(e.currentTarget)) {
-
-			this.evOnContainerClick(e);
-
-			return;
-		}
 
 		this.focused = false;
 
@@ -226,8 +245,17 @@
 	Chosen.prototype.evOnContainerClick = function (e) {
 
 		e.preventDefault();
+		e.stopPropagation();
 
 		this.opened = !this.opened;
+
+		this.currentItems = this.queryItems(this.query, this.selectedValue);
+
+		this.resultsElements = this.buildResults(this.currentItems);
+
+		this.appendResults(this.resultsElements, this.$resultsContainer);
+
+		this.registerResultsEvents(this.resultsElements);
 
 		if (this.opened) {
 			this.openDropdown();
@@ -240,12 +268,32 @@
 
 		e.preventDefault();
 
-		this.$selectedResult = e.currentTarget;
+		if (this.$selectedResult) {
+			this.$selectedResult.classList.remove('result-selected');
+		}
+
+		this.$selectedResult = e.target;
 
 		var selectedItem = this.getItemByResultIndex(this.$selectedResult.getAttribute('data-option-array-index')),
 			selectedValue = selectedItem.value;
 
+		this.$selectedResult.classList.add('result-selected');
+
 		this.setSelectedValue(selectedValue);
+	};
+
+	Chosen.prototype.evResultMouseEnter = function (e) {
+
+		var $target = e.target;
+
+		$target.classList.add('highlighted');
+	};
+
+	Chosen.prototype.evResultMouseLeave = function (e) {
+
+		var $target = e.target;
+
+		$target.classList.remove('highlighted');
 	};
 
 	// #endregion event handlers
@@ -268,7 +316,7 @@
 
 	Chosen.prototype.isChosenComponent = function ($element) {
 
-		return this.htmlComponents.indexOf($element) !== -1;
+		return this.htmlComponents.indexOf($element) !== -1 || this.resultsElements.indexOf($element) !== -1;
 	};
 
 	Chosen.prototype.getItems = function ($select) {
@@ -315,6 +363,37 @@
 			selectedItemText = selectedItem.text || '';
 
 		this.$selectedValueContainer.innerText = selectedItemText;
+	};
+
+	Chosen.prototype.appendResults = function ($results, $resultsContainer) {
+
+		var $currentResults = $resultsContainer.querySelectorAll('.chosen-result');
+
+		for (var i = 0; i < $currentResults.length; i++) {
+			$resultsContainer.removeChild($currentResults[i]);
+		}
+
+		for (var i = 0; i < $results.length; i++) {
+			$resultsContainer.appendChild($results[i]);
+		}
+	};
+
+	Chosen.prototype.queryItems = function (query, selectedValue) {
+
+		var queryResults = this.currentItems.slice();
+
+		if (selectedValue) {
+
+			var indexOfSelectedValue = queryResults.map(function (result) {
+				return result.value;
+			}).indexOf(selectedValue);
+
+			if (indexOfSelectedValue !== -1) {
+				queryResults.splice(indexOfSelectedValue, 1);
+			}
+		}		
+
+		return queryResults;
 	};
 
 	// #endregion
