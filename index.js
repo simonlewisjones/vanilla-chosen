@@ -413,6 +413,19 @@
 
 		this.$element.value = value;
 
+		if ("createEvent" in document) {
+		    var evt = document.createEvent("HTMLEvents");
+		    evt.initEvent("change", false, true);
+		    this.$element.dispatchEvent(evt);
+		}
+		else {
+			this.$element.fireEvent("onchange");
+		}    
+
+		if (typeof this.options.change === 'function') {
+			this.options.change(this.getItemByValue(value), this.getItemByValue(previousSelectedValue), this.$element);
+		}
+
 		return this.selectedValue;
 	};
 
