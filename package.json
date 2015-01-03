@@ -1,0 +1,20 @@
+{
+  "name": "vanilla-chosen",
+  "version": "0.1.1",
+  "author": "Alessandro Muresan",
+  "description": "Framework-independent chosen dropdown plugin",
+  "contributors": [ 
+    {
+      "name": "Alessandro Muresan",
+      "email": "alessandro.muresan@gmail.com"
+    } 
+  ],  
+  "main": "./index.js",
+  "keywords": [
+    "chosen",
+    "dropdown",
+    "searchbox"
+  ],
+  "noAnalyze": true,
+  "license": "MIT"
+}
