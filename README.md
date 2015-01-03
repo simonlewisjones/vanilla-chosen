@@ -2,7 +2,9 @@
 
 Chosen is a library for making long, unwieldy select boxes more user friendly.
 
-This fork is framework-independent :D
+This implementation is framework-independent :D
+
+**NOTE: This implementation is not backwards compatible with the original chosen API !!!**
 
 ### Chosen Credits
 
