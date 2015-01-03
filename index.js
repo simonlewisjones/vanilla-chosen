@@ -195,7 +195,10 @@
 		}
 
 		var htmlComponents = this.htmlComponents,
-			resultsElements = this.resultsElements;
+			resultsElements = this.resultsElements,
+			options = this.options,
+			query = this.query,
+			selectedValue = this.selectedValue;
 
 		return items.map(function (item, index) {
 
@@ -209,7 +212,11 @@
 			$result.setAttribute('data-option-array-index', index + 1);
 			$result.setAttribute('data-option-value', item.value || '');
 
-			$result.innerText = item.text;
+			if (typeof options.renderResult === 'function') {
+				$result.innerText = options.renderResult(item, query, selectedValue);
+			} else {
+				$result.innerText = item.text;
+			}
 
 			resultsElements.push($result);
 
@@ -409,7 +416,11 @@
 		var selectedItem = this.getItemByValue(value),
 			selectedItemText = selectedItem.text || '';
 
-		this.$selectedValueContainer.innerText = selectedItemText;
+		if (typeof this.options.renderSelectedValue === 'function') {
+			this.$selectedValueContainer.innerText = this.options.renderSelectedValue(selectedItem, this.query);
+		} else {
+			this.$selectedValueContainer.innerText = selectedItemText;
+		}
 
 		this.$element.value = value;
 
