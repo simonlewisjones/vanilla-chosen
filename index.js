@@ -264,7 +264,7 @@
 
 		this.$dropdownContainer.classList.add('chosen-container-active');
 
-		this.$dropdown.focus();
+		this.$searchInput.focus();
 	};
 
 	Chosen.prototype.evOnOuterClick = function (e) {
