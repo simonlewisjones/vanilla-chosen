@@ -20,6 +20,8 @@
 
 	var Chosen = function ($element, options) {
 
+		if (!(this instanceof Chosen)) return new Chosen($element, options);
+
 		this.$element = $element;
 
 		this.options.isMultiple = $element.getAttribute('multiple') === 'multiple';
@@ -264,7 +266,7 @@
 
 		this.$dropdownContainer.classList.add('chosen-container-active');
 
-		this.$dropdown.focus();
+		this.$searchInput.focus();
 	};
 
 	Chosen.prototype.evOnOuterClick = function (e) {
